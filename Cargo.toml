@@ -1,0 +1,7 @@
+# A "workspace" is basically a multi-project build for Cargo.
+# When cargo executes in this root directory, all of the 'member'
+# projects will be built.
+[workspace]
+members = [
+    "ex1"
+]

@@ -3,5 +3,6 @@
 # projects will be built.
 [workspace]
 members = [
-    "ex1"
+    "ex1",
+    "circular-buffer1"
 ]

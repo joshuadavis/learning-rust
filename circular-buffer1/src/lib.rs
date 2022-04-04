@@ -10,7 +10,8 @@ pub struct VecCircBuf<T> {
 
 // Next, we'll add some methods on the struct.
 impl<T> VecCircBuf<T>
-    where T: Copy   // We want the elements to be copy-able types (more about that later)...
+where
+    T: Copy, // We want the elements to be copy-able types (more about that later)...
 {
     // Start with a constructor.  We'll initialize the buffer with the specified capacity.
     // Self resolves to CircBuf<T>, so we don't have as many cascading changes if we decide
@@ -36,7 +37,8 @@ impl<T> VecCircBuf<T>
         // If the buffer isn't full yet, append.
         if self.capacity() > self.len() {
             self.buf.push(sample);
-        } else { // Otherwise, the buffer is full to capacity, write the sample into the buffer.
+        } else {
+            // Otherwise, the buffer is full to capacity, write the sample into the buffer.
             self.buf[self.write_idx] = sample;
         }
         // Increment the write index for next time.
@@ -56,9 +58,11 @@ impl<T> VecCircBuf<T>
             // Note that we need to do the "write_idx - 1" using signed subtraction, so we
             // cast to isize then subtract.
             let i = (self.write_idx as isize - 1) - k as isize;
-            if i >= 0 { // in bounds, just return it
+            if i >= 0 {
+                // in bounds, just return it
                 Some(self.buf[i as usize])
-            } else {    // needs to "wrap" to the end of the buffer...
+            } else {
+                // needs to "wrap" to the end of the buffer...
                 // 'i' is negative, so we can add it to len() to get the index
                 // Note that we need to do signed addition, so we cast to isize, then add.
                 Some(self.buf[(self.len() as isize + i) as usize])
@@ -79,7 +83,7 @@ impl<T> VecCircBuf<T>
 
 #[cfg(test)]
 mod tests {
-    use super::*;   // Bring in the code we want to test from the outer module.
+    use super::*; // Bring in the code we want to test from the outer module.
 
     #[test]
     fn initial_state() {
@@ -87,6 +91,21 @@ mod tests {
         assert_eq!(0, buf.len());
         assert_eq!(8, buf.capacity());
         assert_eq!(None, buf.get(0));
+    }
+
+    #[test]
+    fn when_capacity_is_zero() {
+        let buf = VecCircBuf::<i16>::new(0);
+        assert_eq!(0, buf.len());
+        assert_eq!(0, buf.capacity());
+        assert_eq!(None, buf.get(0));
+    }
+
+    #[test]
+    #[should_panic]
+    fn when_capacity_is_zero_panic_on_add() {
+        let mut buf = VecCircBuf::<i16>::new(0);
+        buf.add(1234)
     }
 
     #[test]

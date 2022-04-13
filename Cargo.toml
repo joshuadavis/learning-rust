@@ -4,5 +4,6 @@
 [workspace]
 members = [
     "ex1",
-    "circular-buffer1"
+    "circular-buffer1",
+    "delay-vst1"
 ]

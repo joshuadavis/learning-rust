@@ -3,6 +3,7 @@ use std::slice::Iter;
 
 // First, we make a struct to represent the circular buffer.
 // We'll give it a type parameter, so we can use it for floating point or integer samples.
+#[derive(Default)]
 pub struct VecCircBuf<T> {
     buf: Vec<T>,
     write_idx: usize,

@@ -1,0 +1,19 @@
+[package]
+name = "delay-vst1"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# The VST interface, from crates.io
+vst = "0.3"
+
+# Adding a dependency that comes from inside the same git repo is pretty easy...
+circular-buffer1 = { path = "../circular-buffer1" }
+
+# VSTs are libraries - DLLs on Windows
+# So the crate type will tell cargo to make a DLL (or a Mac library)
+[lib]
+name = "delayvst"
+crate-type = ["cdylib"]

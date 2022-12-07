@@ -23,10 +23,6 @@ struct DelayVst {
 
 // We're implementing a trait `Plugin` that does all the VST-y stuff for us.
 impl Plugin for DelayVst {
-    fn new(host: HostCallback) -> Self where Self: Sized {
-        return Self { host_callback : host, delay_buf : VecCircBuf::new(1024) };
-    }
-
     fn get_info(&self) -> Info {
         Info {
             name: "DelayVst".to_string(),
@@ -35,17 +31,21 @@ impl Plugin for DelayVst {
             // Don't worry much about this now - just fill in a random number.
             unique_id: 1337,
 
+            // Let's set the number of inputs and outputs for stereo operation.
+            inputs: 2,
+            outputs: 2,
+
             // For now, fill in the rest of our fields with `Default` info.
             ..Default::default()
         }
     }
 
+    fn new(host: HostCallback) -> Self where Self: Sized {
+        return Self { host_callback : host, delay_buf : VecCircBuf::new(1024) };
+    }
+
     // Here is where the bulk of our audio processing code goes.
     fn process(&mut self, buffer: &mut AudioBuffer<f32>) {
-
-        // Questions:
-        // How do we know how many channels there are?
-        // How do we iterate over input, output, and delay-line channels at the same time?
 
         // 'buffer' contains the streams of input and output samples.
         // 'buffer.zip()' returns an iterator over pairs of input/output buffers.
@@ -55,6 +55,7 @@ impl Plugin for DelayVst {
             for (input_sample, output_sample) in input_buffer.iter().zip(output_buffer) {
                 // Push the input sample into the circular buffer.
                 self.delay_buf.add(*input_sample);
+                // Grab the delayed sample.  Blend it in.
                 *output_sample = *input_sample;
             }
         }

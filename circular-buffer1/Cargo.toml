@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 
 [dev-dependencies]
-criterion = "0.3.5" # We'll use Criterion for benchmarking.
+criterion = "0.4.0" # We'll use Criterion for benchmarking.
 
 [[bench]]
 name = "circbuf_bench"

@@ -1,5 +1,3 @@
-use std::iter::{Chain, Rev};
-use std::slice::Iter;
 
 // First, we make a struct to represent the circular buffer.
 // We'll give it a type parameter, so we can use it for floating point or integer samples.
@@ -71,7 +69,9 @@ where
         }
     }
 
-    pub fn iter(&self) -> Chain<Rev<Iter<'_, T>>, Rev<Iter<'_, T>>> {
+    // We don't want to expose the details of how this iterator works, so we return the general
+    // Iterator trait.
+    pub fn iter(&self) -> impl Iterator<Item = &T> {
         // Create two slices for the buffer:  One for the samples up to the write index, one for
         // the samples after the write index.  Also, borrow the slices using '&' so that the
         // size of the two variables is known at compile time (both variables are "&[T]").
